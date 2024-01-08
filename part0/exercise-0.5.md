@@ -25,5 +25,5 @@ sequenceDiagram
     server-->>browser: Json with the notes
     deactivate server
 
-    Note right of browser: Browser executes callbac and renders the notes
+    Note right of browser: Browser executes callback and renders the notes
 ```
