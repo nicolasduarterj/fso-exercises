@@ -1,0 +1,1 @@
+A repo for submitting my exercises on the Full Stack Open course by the University of Helsinki.
