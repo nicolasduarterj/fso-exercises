@@ -3,6 +3,7 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 
 
+
 function App() {
   const course = 'Half Stack application development'
   const part1 = 'Fundamentals of React'
@@ -21,6 +22,12 @@ function App() {
   )
 }
 
+/**
+ * Função que gera o header
+ *
+ * @prop {string} course
+ * @return {jsx} 
+ */
 const Header = (props) => {
   return (
     <>
@@ -29,6 +36,13 @@ const Header = (props) => {
   )
 }
 
+/**
+ * Componente que aglomera os headers das partes do curso
+ * 
+ * @prop {string} part (3 no total)
+ * @prop {int} exnum (3 no total)
+ * @returns {jsx}
+ */
 const Content = (props) => {
   return (
     <>
@@ -39,6 +53,13 @@ const Content = (props) => {
   )
 }
 
+/**
+ *Componente que gera o h1 da parte
+ *
+ * @prop {string} part
+ * @prop {int} exnum
+ * @return {jsx} 
+ */
 const Part = (props) => {
   return (
     <>
