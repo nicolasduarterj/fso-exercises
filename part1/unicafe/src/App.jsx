@@ -38,11 +38,26 @@ const Holder = ({states}) => {
   else {
       return (
         <>
-        <Stats texto="Positive" stat={states[0]}/>
-        <Stats texto="Neutral" stat={states[1]}/>
-        <Stats texto="Negative" stat={states[2]}/>
-        <Stats texto="Average" stat={average(states)}/>
-        <Stats texto="Percent Positive" stat={percent(states)}/>
+        <table>
+          <tbody>
+            <tr>
+            <Stats texto="Positive" stat={states[0]}/>
+            </tr>
+            <tr>
+            <Stats texto="Neutral" stat={states[1]}/>
+            </tr>
+            <tr>
+            <Stats texto="Negative" stat={states[2]}/>
+            </tr>
+            <tr>
+            <Stats texto="Average" stat={average(states)}/>
+            </tr>
+            <tr>
+            <Stats texto="Percent Positive" stat={percent(states)}/>
+            </tr>
+          </tbody>
+          
+        </table>
         </>
         
       )
@@ -62,6 +77,12 @@ const percent = (array) => (array[0]/(array[0] + array[1] + array[2])) * 100
 
 const ButtonFeed = ({funcao, texto}) => <button onClick={funcao}>{texto}</button>
 
-const Stats = ({stat, texto}) => <p>{texto}: {stat}</p>
+const Stats = ({stat, texto}) =>  {
+  return (
+    <>
+    <td>{texto}</td><td>{stat}</td>
+    </>
+  )
+}
 
 export default App
