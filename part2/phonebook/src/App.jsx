@@ -39,16 +39,14 @@ function App() {
     setNewNum(event.target.value)
   }
   return (
-    <>
-      <div>
-      <h2>Phonebook</h2>
+    <div> 
+     <h2>Phonebook</h2>
       <Search arr={persons}/>
       <h3>Add someone to the phonebook</h3>
       <FormPhB states={[newName, newNum]} funcs={[addName, noteChange, numChange]}/>
       <h2>All numbers</h2>
       <Lista arr={persons}/>
     </div>
-    </>
   )
 }
 //states = [estado do nome, estado do número]
@@ -73,8 +71,8 @@ const FormPhB = ({states, funcs}) => {
 const Lista = ({arr}) => {
   return (
     <>
-    <ul>
-      {arr.map(person => <li key={person.name}>{person.name}: {person.number}</li>)}
+    <ul> 
+      {arr.map(person => <li key={person.name}> {person.name}: {person.number}</li>)}
     </ul>
     </>
   )
