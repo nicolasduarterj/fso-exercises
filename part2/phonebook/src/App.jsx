@@ -94,7 +94,7 @@ const Search = ({arr}) => {
       <h3>Search for a person</h3>
       <input value={filtro} onChange={changeFiltro}/>
       <ul>
-        {filtrados.map(person => <li>{person.name}</li>)}
+        {filtrados.map(person => <li key={person.name}>{person.name}</li>)}
       </ul>
       <br/>
       <br/>
