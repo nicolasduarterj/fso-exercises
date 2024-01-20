@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import axios from 'axios'
+import bookServices from './services/bookServices'
 
 function App() {
   const [persons, setPersons] = useState([])
@@ -9,18 +10,24 @@ function App() {
   const [newNum, setNewNum] = useState("")
 
   const addName = event => {
+    const num = persons.length + 1
     event.preventDefault()
     const notaObj = {
       name: newName,
-      number: newNum
+      number: newNum,
+      id: num.toString()
     }
     console.log(notaObj)
     
+    //Se não há um objeto na array tal que o seu nome seja igual ao nome na notaObj
     if (!persons.some(person => person.name === notaObj.name)) { 
-      setPersons(persons.concat(notaObj))
-      console.log(persons.concat(notaObj))
-      setNewName("")
-  
+      bookServices.postPerson(notaObj).then(retorno => {
+        setPersons(persons.concat(retorno))
+        console.log(persons.concat(retorno))
+        setNewName("")
+       
+      })
+        
     }
     else {
       alert(`${notaObj.name} is already present in the phonebook.`)
@@ -35,14 +42,19 @@ function App() {
     console.log(event.target.value)
     setNewNum(event.target.value)
   }
+
+  const deletePerson = name => {
+    const id = persons.find(person => person.name === name).id
+    bookServices.deletePerson(id).then(() => {
+      setPersons(persons.filter(person => person.id !== id))
+    })
+  }
   
   useEffect(() => {
     console.log("Starting effect")
-    axios
-      .get('http://localhost:3001/persons').then(response => {
-        console.log("Promise fulfilled")
-        setPersons(response.data)
-      })
+    bookServices.getAll().then(resposta => {
+      console.log("Effect conluded")
+      setPersons(resposta)}) 
   }, [])
   
   return (
@@ -52,7 +64,7 @@ function App() {
       <h3>Add someone to the phonebook</h3>
       <FormPhB states={[newName, newNum]} funcs={[addName, noteChange, numChange]}/>
       <h2>All numbers</h2>
-      <Lista arr={persons}/>
+      <Lista arr={persons} func={deletePerson}/>
     </div>
   )
 }
@@ -75,11 +87,16 @@ const FormPhB = ({states, funcs}) => {
   )
 }
 
-const Lista = ({arr}) => {
+const Lista = ({arr, func}) => {
   return (
     <>
     <ul> 
-      {arr.map(person => <li key={person.name}> {person.name}: {person.number}</li>)}
+      {arr.map(person => {
+      return(
+      <>
+      <li key={person.id}> {person.name}: {person.number} <button onClick={() => func(person.name)}>Delete</button> </li> 
+      </>
+    )})}
     </ul>
     </>
   )
