@@ -12,42 +12,47 @@ function App() {
   const addName = event => {
     const num = persons.length + 1
     event.preventDefault()
-    const notaObj = {
+    let notaObj = {
       name: newName,
       number: newNum,
       id: num.toString()
     }
-    console.log(notaObj)
+    console.log("NotaObj antes do if: ", notaObj)
     
     //Se não há um objeto na array tal que o seu nome seja igual ao nome na notaObj
     if (!persons.some(person => person.name === notaObj.name)) { 
-      bookServices.postPerson(notaObj).then(retorno => {
-        setPersons(persons.concat(retorno))
-        console.log(persons.concat(retorno))
-        setNewName("")
+        bookServices.postPerson(notaObj).then(retorno => {
+          setPersons(persons.concat(retorno))
+          console.log("Persons concateneda: ", persons.concat(retorno))
+          setNewName("")
        
       })
         
     }
     else {
-      alert(`${notaObj.name} is already present in the phonebook.`)
+      if (window.confirm("This person is already present on the phonebook. Do you wish to alter their information nonetheless?")) {
+        notaObj.id = persons.find(person => person.name === notaObj.name).id
+        console.log("NotaObj.id =", notaObj.id)
+        bookServices.updatePerson(notaObj).then(retorno => {
+          setPersons(persons.filter(person => person.name !== notaObj.name).concat(retorno))
+          console.log("Persons concatenada: ", "Persons concatenada: ", persons.concat(retorno))
+          setNewName("")
+        })
+      }
     }
   }
   const noteChange = event => {
-    console.log(event.target.value)
     setNewName(event.target.value)
   }
 
   const numChange = event => {
-    console.log(event.target.value)
     setNewNum(event.target.value)
   }
 
   const deletePerson = name => {
     const id = persons.find(person => person.name === name).id
-    bookServices.deletePerson(id).then(() => {
-      setPersons(persons.filter(person => person.id !== id))
-    })
+    bookServices.deletePerson(id).then(() => 
+      setPersons(persons.filter(person => person.id !== id)))
   }
   
   useEffect(() => {
@@ -91,13 +96,19 @@ const Lista = ({arr, func}) => {
   return (
     <>
     <ul> 
-      {arr.map(person => {
-      return(
-      <>
-      <li key={person.id}> {person.name}: {person.number} <button onClick={() => func(person.name)}>Delete</button> </li> 
-      </>
-    )})}
+      {arr.map(person => <ItemLista person={person} func={func} key={person.id}/>)}
     </ul>
+    </>
+  )
+}
+
+const ItemLista = ({person, func}) => {
+  const str = "Are you sure you want to delete this person"
+  return(
+    <>
+      <li> {person.name}: {person.number} {'\u00A0'}
+        <button onClick={() => {if (window.confirm(str)) {func(person.name)}}}>Delete</button> 
+      </li> 
     </>
   )
 }
@@ -106,10 +117,9 @@ const Search = ({arr}) => {
   const [filtro, setFiltro] = useState("")
   const [filtrados, setFiltrados] = useState([])
   function changeFiltro(event) {
-    console.log(event.target.value)
     setFiltro(event.target.value)
     const valid = arr.filter(person => person.name.includes(event.target.value))
-    console.log(valid)
+    console.log("valid: ", valid)
     setFiltrados(valid)
   }
 
@@ -120,7 +130,6 @@ const Search = ({arr}) => {
       <ul>
         {filtrados.map(person => <li key={person.name}>{person.name}</li>)}
       </ul>
-      <br/>
       <br/>
 
     </>
