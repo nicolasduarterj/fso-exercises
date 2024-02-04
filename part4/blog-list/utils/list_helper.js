@@ -31,10 +31,7 @@ const mostBlogs = blogs => {
 const mostLikes = blogs => {
   const perAuthor = _.groupBy(blogs, 'author')
   /* ∀ array de objetos presente como valor no perAuthor -> reduce que soma os likes de cada
-  objeto na array -> resultado do reduce substitui o valor original
-   e.g. Assumindo que no perAuthor haja "Fulano": [blog1, blog2, blog3], essa array vai ser mapeada
-   a um reduce que vai somar a quantidade de likes presentes nos blogs de Fulano
-   e assinalar o resultado como o valor de "Fulano" no objeto */
+   objeto na array -> resultado do reduce substitui o valor original */
   const numberPA = _.mapValues(perAuthor, (arr) => arr.reduce((sum, atual) => sum + atual.likes, 0))
   const names = _.keys(numberPA)
   const numbers = _.values(numberPA)
