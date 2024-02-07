@@ -54,6 +54,28 @@ test('when submitting a blog without a title or url, reject the request', async 
   await api.post('/api/blogs').send(problemBlog2).expect(400)
 })
 
+test('delete by id works', async () => {
+  const id = helper.initialBlogs[0]._id
+  await api.delete(`/api/blogs/${id}`).expect(204)
+
+  const end = await helper.blogsInEnd()
+  expect(end).not.toContainEqual(helper.initialBlogs[0])
+})
+
+test('updating a blog works', async () => {
+  const changedBlog = helper.initialBlogs[0]
+  changedBlog.likes = 999
+  await api.put(`/api/blogs/${changedBlog._id}`).send(changedBlog).expect(200)
+
+  const changedBlogtransf = changedBlog
+  changedBlogtransf.id = changedBlog._id
+  delete changedBlogtransf.__v
+  delete changedBlogtransf._id
+  const end = await helper.blogsInEnd()
+
+  expect(end).toContainEqual(changedBlogtransf)
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })
