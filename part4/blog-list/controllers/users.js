@@ -5,7 +5,7 @@ const logger = require('../utils/logger')
 
 usersRouter.post('/', async (req, res) => {
   const { uName, name, pass } = req.body
-  if (pass.length < 3) {
+  if (pass === undefined || pass.length < 3) {
     const e = new Error('Validation Error: password must be at least 3 characters long')
     e.name = 'ValidationError'
     throw e
@@ -24,7 +24,7 @@ usersRouter.post('/', async (req, res) => {
 })
 
 usersRouter.get('/', async (req, res) => {
-  const users = await User.find({})
+  const users = await User.find({}).populate('blogs', { title: 1, url: 1 })
   res.json(users)
 })
 
