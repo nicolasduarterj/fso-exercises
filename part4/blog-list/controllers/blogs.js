@@ -10,6 +10,9 @@ blogsRouter.get('/', async (req, res) => {
 blogsRouter.post('/', async (req, res) => {
   const body = req.body
   const user = req.user
+  if (user === null || user === undefined) {
+    return res.status(401).send({ error: 'Lacking a valid token' })
+  }
   const newBlog = new Blog({
     title: body.title,
     author: body.author,

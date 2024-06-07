@@ -100,6 +100,9 @@ test('updating a blog works', async () => {
   expect(end[0]).toEqual(changedBlogtransf)
 })
 
+test('no adding a blog without a token', async () => {
+  await api.post('/api/blogs').send(helper.exBlog).expect(401)
+})
 afterAll(async () => {
   await mongoose.connection.close()
 })
