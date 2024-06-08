@@ -12,11 +12,9 @@ const App = () => {
   const [uName, setuName] = useState('')
   const [pass, setPass] = useState('')
   const [user, setUser] = useState(null)
-  const [newBlogTitle, setNewBlogTitle] = useState('')
-  const [newBlogAuthor, setNewBlogAuthor] = useState('')
-  const [newBlogUrl, setNewBlogUrl] = useState('')
-  const [notiMessage, setNotiMessage] = useState(null)
-  const [isError, setIsError] = useState(false)
+  const [blogData, setBlogData] = useState({ title: '', author: '', url: '' })
+  const [notiMessage, setNotiMessage] = useState({ isError: false, message: null })
+
   useEffect(async () => {
     const blogs = await blogService.getAll()
     setBlogs(blogs)
@@ -54,7 +52,7 @@ const App = () => {
 
   const postBlog = async (event) => {
     event.preventDefault()
-    const newblog = { title: newBlogTitle, author: newBlogAuthor, url: newBlogUrl, likes: 0 }
+    const newblog = { ...blogData, likes: 0 }
     try {
       const response = await blogService.create(newblog)
       console.log(response)
@@ -65,27 +63,25 @@ const App = () => {
   }
 
   const showError = errormessage => {
-    setIsError(true)
-    setNotiMessage(errormessage)
-    setTimeout(() => setNotiMessage(null), 5000)
+    setNotiMessage({ isError: true, message: errormessage })
+    setTimeout(() => setNotiMessage({ isError: false, message: null }), 5000)
   }
 
   const showSuccess = successMessage => {
-    setIsError(false)
-    setNotiMessage(successMessage)
-    setTimeout(() => setNotiMessage(null), 5000)
+    setNotiMessage({ isError: false, message: successMessage })
+    setTimeout(() => setNotiMessage({ isError: false, message: null }), 5000)
   }
 
   return (
     <div>
-      <Notification message={notiMessage} isError={isError} />
+      <Notification message={notiMessage.message} isError={notiMessage.isError} />
       {user === null && LoginForm({ setuName, setPass, loginHandler, currentuName: uName, currentpass: pass })}
       {user !== null && <button onClick={logout}>Logout</button>}
       <h2>blogs</h2>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
-      {user !== null && BlogForm({ newBlogTitle, setNewBlogTitle, newBlogAuthor, setNewBlogAuthor, newBlogUrl, setNewBlogUrl, postBlog })}
+      {user !== null && BlogForm({ blogData, setBlogData, postBlog })}
     </div>
   )
 }
