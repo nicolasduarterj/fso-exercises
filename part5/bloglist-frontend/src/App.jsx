@@ -5,10 +5,9 @@ import blogService from './services/blogs'
 const App = () => {
   const [blogs, setBlogs] = useState([])
 
-  useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
+  useEffect(async () => {
+    const blogs = await blogService.getAll()
+    setBlogs(blogs)
   }, [])
 
   return (
