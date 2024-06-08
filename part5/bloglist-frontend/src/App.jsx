@@ -15,9 +15,12 @@ const App = () => {
   const [blogData, setBlogData] = useState({ title: '', author: '', url: '' })
   const [notiMessage, setNotiMessage] = useState({ isError: false, message: null })
 
-  useEffect(async () => {
-    const blogs = await blogService.getAll()
-    setBlogs(blogs)
+  useEffect(() => {
+    async function getBlogs() {
+      const blogs = await blogService.getAll()
+      setBlogs(blogs)
+    }
+    getBlogs()
   }, [])
 
   useEffect(() => {
