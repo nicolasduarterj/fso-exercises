@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import blogService from './services/blogs'
@@ -6,14 +6,16 @@ import loginService from './services/login'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import './index.css'
+import Togglable from './components/Togglable'
 const App = () => {
 
   const [blogs, setBlogs] = useState([])
   const [uName, setuName] = useState('')
   const [pass, setPass] = useState('')
   const [user, setUser] = useState(null)
-  const [blogData, setBlogData] = useState({ title: '', author: '', url: '' })
   const [notiMessage, setNotiMessage] = useState({ isError: false, message: null })
+
+  const blogFormRef = useRef()
 
   useEffect(() => {
     async function getBlogs() {
@@ -53,9 +55,10 @@ const App = () => {
     setUser(null)
   }
 
-  const postBlog = async (event) => {
-    event.preventDefault()
+  const postBlog = async (blogData) => {
+    blogFormRef.current.toggleVisibility()
     const newblog = { ...blogData, likes: 0 }
+    console.log(newblog)
     try {
       const response = await blogService.create(newblog)
       console.log(response)
@@ -75,16 +78,38 @@ const App = () => {
     setTimeout(() => setNotiMessage({ isError: false, message: null }), 5000)
   }
 
+  const likeBlog = async (blog) => {
+    try {
+      const response = await blogService.like(blog.id)
+      console.log(response)
+      showSuccess('Blog liked')
+    } catch (exception) {
+      showError(exception.message)
+    }
+  }
+
   return (
     <div>
-      <Notification message={notiMessage.message} isError={notiMessage.isError} />
-      {user === null && LoginForm({ setuName, setPass, loginHandler, currentuName: uName, currentpass: pass })}
-      {user !== null && <button onClick={logout}>Logout</button>}
       <h2>blogs</h2>
+      <Notification message={notiMessage.message} isError={notiMessage.isError} />
+
+      {user === null &&
+        <Togglable buttonLabel='Login'>
+          <LoginForm setuName={setuName} setPass={setPass} loginHandler={loginHandler} currentuName={uName} currentpass={pass} />
+        </Togglable>}
+
+      {user !== null &&
+        <button style={{ marginBottom: 5 }} onClick={logout}>Logout</button>}
+
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} onLike={likeBlog} />
       )}
-      {user !== null && BlogForm({ blogData, setBlogData, postBlog })}
+
+      {user !== null &&
+        <Togglable buttonLabel='Create blog' ref={blogFormRef}>
+          <BlogForm postBlog={postBlog} />
+        </Togglable>}
+
     </div>
   )
 }
