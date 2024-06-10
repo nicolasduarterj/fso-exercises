@@ -10,8 +10,7 @@ import Togglable from './components/Togglable'
 const App = () => {
 
   const [blogs, setBlogs] = useState([])
-  const [uName, setuName] = useState('')
-  const [pass, setPass] = useState('')
+  const [userLoginData, setUserLoginData] = useState({ uName: '', pass: '' })
   const [user, setUser] = useState(null)
   const [notiMessage, setNotiMessage] = useState({ isError: false, message: null })
 
@@ -20,7 +19,8 @@ const App = () => {
   useEffect(() => {
     async function getBlogs() {
       const blogs = await blogService.getAll()
-      setBlogs(blogs)
+      const sortedblogs = blogs.toSorted((blogA, blogB) => blogB.likes - blogA.likes)
+      setBlogs(sortedblogs)
     }
     getBlogs()
   }, [])
@@ -37,7 +37,7 @@ const App = () => {
   const loginHandler = async (event) => {
     try {
       event.preventDefault()
-      const user = await loginService.login({ uName, pass })
+      const user = await loginService.login(userLoginData)
       window.localStorage.setItem('loggedUser', JSON.stringify(user))
       setUser(user)
       blogService.setToken(user.token)
@@ -95,7 +95,7 @@ const App = () => {
 
       {user === null &&
         <Togglable buttonLabel='Login'>
-          <LoginForm setuName={setuName} setPass={setPass} loginHandler={loginHandler} currentuName={uName} currentpass={pass} />
+          <LoginForm userLoginData={userLoginData} setUserLoginData={setUserLoginData} loginHandler={loginHandler} />
         </Togglable>}
 
       {user !== null &&

@@ -1,12 +1,14 @@
-const LoginForm = ({ setuName, setPass, loginHandler, currentuName, currentpass }) => (
+const LoginForm = ({ userLoginData, setUserLoginData, loginHandler }) => (
     <form onSubmit={loginHandler}>
         <div>
             Username
-            <input type="text" value={currentuName} name="Username" onChange={({ target }) => setuName(target.value)} />
+            <input type="text" value={userLoginData.uName} name="Username"
+                onChange={({ target }) => setUserLoginData({ ...userLoginData, uName: target.value })} />
         </div>
         <div>
             Password
-            <input type="text" value={currentpass} name="Password" onChange={({ target }) => setPass(target.value)} />
+            <input type="text" value={userLoginData.pass} name="Password"
+                onChange={({ target }) => setUserLoginData({ ...userLoginData, pass: target.value })} />
         </div>
         <button type="submit">Login</button>
     </form>
