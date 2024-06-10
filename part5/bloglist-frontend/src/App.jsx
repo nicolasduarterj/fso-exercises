@@ -41,8 +41,7 @@ const App = () => {
       window.localStorage.setItem('loggedUser', JSON.stringify(user))
       setUser(user)
       blogService.setToken(user.token)
-      setuName('')
-      setPass('')
+      setUserLoginData({ uName: '', pass: '' })
       console.log(user)
       showSuccess(`Logged in as ${user.name}`)
     } catch (exception) {
@@ -62,7 +61,7 @@ const App = () => {
     try {
       const response = await blogService.create(newblog)
       console.log(response)
-      showSuccess("Blog created successfully")
+      showSuccess('Blog created successfully')
     } catch (exception) {
       showError(exception.message)
     }
@@ -88,6 +87,16 @@ const App = () => {
     }
   }
 
+  const deleteBlog = async (blog) => {
+    try {
+      const response = await blogService.deleteBlog(blog.id)
+      console.log(response)
+      showSuccess('Blog deleted')
+    } catch (exception) {
+      showError(exception.message)
+    }
+  }
+
   return (
     <div>
       <h2>blogs</h2>
@@ -102,7 +111,7 @@ const App = () => {
         <button style={{ marginBottom: 5 }} onClick={logout}>Logout</button>}
 
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} onLike={likeBlog} />
+        <Blog key={blog.id} blog={blog} onLike={likeBlog} user={user} onDelete={deleteBlog} />
       )}
 
       {user !== null &&
